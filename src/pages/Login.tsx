@@ -1,48 +1,27 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
-import axios from "axios";
+import { useLogin } from "../network/auth/queries";
 
 const Login = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+  const [formData, setFormData] = useState({email:"", password: ""});
+  
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-
-    if (name === "email") {
-      setEmail(value);
-    } else if (name === "password") {
-      setPassword(value);
-    }
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  const {mutate, isPending} = useLogin();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8082/admin/login",
-        {
-          email,
-          password,
-        },
-        {
-          withCredentials: true,
-        },
-      );
-
-      console.log("Login response:", response.data);
-
-      navigate("/otp");
-    } catch (error) {
-      console.error("Login failed:", error);
-    }
+    mutate(formData);
   };
 
   return (
@@ -186,7 +165,7 @@ const Login = () => {
                   type="email"
                   autoComplete="email"
                   required
-                  value={email}
+                  value={formData.email}
                   onChange={handleChange}
                   placeholder="admin@fluxa.com"
                   className="h-13 w-full rounded-xl border border-[#2d120d]/10 bg-white px-4 text-sm text-[#2d120d] outline-none transition placeholder:text-[#2d120d]/25 focus:border-[#6b0b0c] focus:ring-4 focus:ring-[#6b0b0c]/10"
@@ -218,7 +197,7 @@ const Login = () => {
                     type={showPassword ? "text" : "password"}
                     autoComplete="current-password"
                     required
-                    value={password}
+                    value={formData.password}
                     onChange={handleChange}
                     placeholder="Enter your password"
                     className="h-13 w-full rounded-xl border border-[#2d120d]/10 bg-white px-4 pr-12 text-sm text-[#2d120d] outline-none transition placeholder:text-[#2d120d]/25 focus:border-[#6b0b0c] focus:ring-4 focus:ring-[#6b0b0c]/10"
@@ -237,25 +216,13 @@ const Login = () => {
                 </div>
               </div>
 
-              {/* Remember me */}
-              <label className="flex cursor-pointer items-center gap-3">
-                <input
-                  type="checkbox"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="h-4 w-4 cursor-pointer rounded border-[#2d120d]/20 accent-[#6b0b0c]"
-                />
-
-                <span className="text-sm text-[#2d120d]/60">Remember me</span>
-              </label>
-
               {/* Submit */}
               <button
                 type="submit"
-                disabled={isLoading}
+                // disabled={isLoading}
                 className="group flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-[#6b0b0c] px-5 text-sm font-semibold text-white shadow-lg shadow-[#6b0b0c]/15 transition hover:bg-[#2d120d] hover:shadow-xl hover:shadow-[#6b0b0c]/20 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {isLoading ? (
+                {isPending ? (
                   <>
                     <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
                     Signing in...
