@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { Eye, EyeOff, ArrowRight, ShieldCheck } from "lucide-react";
 import { useLogin } from "../network/auth/queries";
 
 const Login = () => {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({email:"", password: ""});
   
