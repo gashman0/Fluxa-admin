@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useOtp } from "../network/auth/queries";
 
 const OTP_LENGTH = 6;
 
 const Otp = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const location = useLocation();
 
   const adminId = location.state?.adminId;
