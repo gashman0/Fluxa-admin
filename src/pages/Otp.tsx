@@ -1,17 +1,20 @@
 import { useEffect, useRef, useState } from "react";
 import { ArrowLeft, ShieldCheck } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+import { useOtp } from "../network/auth/queries";
 
 const OTP_LENGTH = 6;
 
 const Otp = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const adminId = location.state?.adminId;
+  console.log("Admin ID:", adminId);
 
   const [otp, setOtp] = useState<string[]>(
     Array(OTP_LENGTH).fill("")
   );
-
-  const [isLoading, setIsLoading] = useState(false);
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
@@ -107,6 +110,8 @@ const Otp = () => {
     inputRefs.current[nextIndex]?.focus();
   };
 
+  const {mutate, isPending} = useOtp();
+
   const handleSubmit = (
     e: React.FormEvent<HTMLFormElement>
   ) => {
@@ -114,16 +119,15 @@ const Otp = () => {
 
     const otpValue = otp.join("");
 
-    if (otpValue.length !== OTP_LENGTH) return;
+    if (otpValue.length !== OTP_LENGTH || !adminId) {
+      return;
+    }
 
-    setIsLoading(true);
-
-    // Temporary verification
-    setTimeout(() => {
-      setIsLoading(false);
-
-      navigate("/dashboard");
-    }, 1000);
+    mutate({
+      adminId,
+      otp: otpValue,
+    })
+    
   };
 
   return (
@@ -324,11 +328,11 @@ const Otp = () => {
                 disabled={
                   otp.join("").length !==
                     OTP_LENGTH ||
-                  isLoading
+                  isPending
                 }
                 className="mt-7 flex h-13 w-full items-center justify-center rounded-xl bg-[#6b0b0c] px-5 text-sm font-semibold text-white shadow-lg shadow-[#6b0b0c]/15 transition hover:bg-[#2d120d] hover:shadow-xl hover:shadow-[#6b0b0c]/20 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {isLoading
+                {isPending
                   ? "Verifying..."
                   : "Verify code"}
               </button>
