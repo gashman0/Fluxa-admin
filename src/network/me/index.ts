@@ -6,6 +6,7 @@ export const me = async () => {
         const response = await api.get(routes.dashboard.me);
         return response.data;
     }catch(error){
+        console.error("Failed to fetch admin:", error);
         throw error;
     }
 }
