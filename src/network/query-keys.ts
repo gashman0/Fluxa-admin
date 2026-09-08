@@ -1,7 +1,7 @@
 
 const queryKeys = {
     users: {
-        getMe: ['me', 'getJobs'] as const,
+        getMe: ['me', 'getMe'] as const,
     },
 }
 
