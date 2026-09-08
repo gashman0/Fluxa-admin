@@ -2,6 +2,8 @@ import { Route, createBrowserRouter, createRoutesFromElements, RouterProvider } 
 import Login from "./pages/Login";
 import Otp from "./pages/Otp";
 import ErrorPage from "./pages/ErrorPage";
+import LoggedInLayout from "./layout/LoggedInLayout";
+import Dashboard from "./pages/Dashboard";
 
 
 
@@ -12,7 +14,9 @@ const router = createBrowserRouter(
         <Route path="/" element={<Login />}/>
         <Route path="/otp" element={<Otp />}/>
 
-      
+        <Route element={<LoggedInLayout />}>
+          <Route path="dashboard" element={<Dashboard />} />
+        </Route>
       </Route>
     </>
   )
