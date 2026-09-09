@@ -2,7 +2,6 @@ const routes = {
     auth: {
         login: "/login",
         otp: "/otp",
-        me: "/me",
         logout: "/logout",
     },
     dashboard: {
