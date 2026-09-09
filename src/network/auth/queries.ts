@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { login, otp } from ".";
+import { login, otp, logout } from ".";
 import queryKeys from "../query-keys";
 import type { loginPayload, otpPayload } from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -35,3 +35,17 @@ export const useOtp = () => {
         }
     });
 };
+
+export const useLogout = () => {
+    const navigate = useNavigate();
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: () => logout(),
+        onSuccess: () => {
+            queryClient.setQueryData([queryKeys.users.getMe], null);
+
+            navigate("/");
+        }
+    })
+}

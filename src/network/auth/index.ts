@@ -17,3 +17,11 @@ export const otp = async(payload: otpPayload) => {
 
     return response?.data;
 }
+
+export const logout = async () => {
+    const response = await api.post(
+        routes.auth.logout
+    );
+
+    return response?.data;
+}
